@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'providers/auth_model.dart';
 import 'providers/app_state.dart';
+import 'pages/login_page.dart';
 import 'pages/my_home_page.dart';
+
+
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => AppState(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthModel()),
+        ChangeNotifierProvider(create: (context) => AppState()),
+      ],
       child: MyApp(),
     ),
   );
 }
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -20,8 +26,16 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        ),
-        home: MyHomePage(),
-      );
+      ),
+      home: Consumer<AuthModel>(
+        builder: (context, authModel, child) {
+          if (authModel.isAuthenticated) {
+            return MyHomePage();
+          } else {
+            return AuthPage();
+          }
+        },
+      ),
+    );
   }
 }
