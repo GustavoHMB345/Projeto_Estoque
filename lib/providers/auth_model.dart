@@ -8,7 +8,6 @@ class AuthModel extends ChangeNotifier {
   bool get isAuthenticated => _isAuthenticated;
 
   void login(String username, String password) {
-    // Aqui você pode adicionar a lógica real de autenticação
     if (username == 'user' && password == 'password') {
       _isAuthenticated = true;
       notifyListeners();

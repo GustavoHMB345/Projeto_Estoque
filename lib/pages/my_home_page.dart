@@ -91,7 +91,7 @@ class MyHomePage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            appState.updateHeaderText('Novo Cabeçalho do Drawer');
+            appState.updateHeaderText('Cabeçalho do Drawer');
           },
           child: Text('Atualizar Cabeçalho'),
         ),
