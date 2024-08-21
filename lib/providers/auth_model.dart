@@ -2,8 +2,6 @@ import 'package:flutter/foundation.dart';
 
 class AuthModel extends ChangeNotifier {
   bool _isAuthenticated = false;
-  String _username = '';
-  String _password = '';
 
   bool get isAuthenticated => _isAuthenticated;
 
@@ -12,15 +10,13 @@ class AuthModel extends ChangeNotifier {
       _isAuthenticated = true;
       notifyListeners();
     } else {
-      _isAuthenticated = false; //
+      _isAuthenticated = false;
       notifyListeners();
     }
   }
 
   void logout() {
     _isAuthenticated = false;
-    _username = '';
-    _password = '';
     notifyListeners();
   }
 }

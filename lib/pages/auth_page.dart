@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_model.dart'; 
+import '../providers/auth_model.dart';
 
 class AuthPage extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
@@ -33,8 +33,15 @@ class AuthPage extends StatelessWidget {
                   onPressed: () {
                     String username = _usernameController.text;
                     String password = _passwordController.text;
-                    Provider.of<AuthModel>(context, listen: false)
-                        .login(username, password);
+                    authModel.login(username, password);
+
+                    if (authModel.isAuthenticated) {
+                      Navigator.pushReplacementNamed(context, '/home');
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Login failed')),
+                      );
+                    }
                   },
                   child: Text('Login'),
                 ),

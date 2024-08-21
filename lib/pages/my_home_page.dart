@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_estoque/pages/auth_page.dart'; 
-import '../providers/auth_model.dart';
 import 'package:provider/provider.dart';
+import '../providers/auth_model.dart'; 
+import '../pages/auth_page.dart';
 import '../providers/app_state.dart';
 
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
+    final authModel = Provider.of<AuthModel>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -76,9 +77,11 @@ class MyHomePage extends StatelessWidget {
               leading: Icon(Icons.logout),
               title: Text('Sair'),
               onTap: () {
-                Navigator.pushReplacement(
+                authModel.logout();
+                Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => AuthPage()),
+                  (route) => false,
                 );
               },
             ),
@@ -88,7 +91,7 @@ class MyHomePage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            appState.updateHeaderText('Estoque    Bright Bee');
+            appState.updateHeaderText('Estoque Bright Bee');
           },
           child: Text('Atualizar Cabeçalho'),
         ),

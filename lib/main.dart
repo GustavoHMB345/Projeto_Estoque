@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_model.dart';
 import 'providers/app_state.dart';
-import 'pages/login_page.dart';
+import 'pages/auth_page.dart'; 
 import 'pages/my_home_page.dart';
-
-
 
 void main() {
   runApp(
@@ -24,23 +22,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Aplicação do estoque',
-      initialRoute: '/',
-      routes: {
-        '/': (context) => MyHomePage(),
-        '/login': (context) => AuthPage(),
-      },
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Consumer<AuthModel>(
-        builder: (context, authModel, child) {
-          if (authModel.isAuthenticated) {
-            return MyHomePage();
-          } else {
-            return AuthPage();
-          }
-        },
-      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => Consumer<AuthModel>(
+          builder: (context, authModel, child) {
+            if (authModel.isAuthenticated) {
+              return MyHomePage();
+            } else {
+              return AuthPage();
+            }
+          },
+        ),
+        '/home': (context) => MyHomePage(),
+        '/login': (context) => AuthPage(),
+      },
     );
   }
 }
