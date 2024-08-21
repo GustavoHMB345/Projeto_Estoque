@@ -8,7 +8,7 @@ class AuthModel extends ChangeNotifier {
   bool get isAuthenticated => _isAuthenticated;
 
   void login(String username, String password) {
-    if (username == 'user' && password == 'password') {
+    if (username == 'adm' && password == '12') {
       _isAuthenticated = true;
       notifyListeners();
     } else {

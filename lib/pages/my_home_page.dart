@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_estoque/pages/auth_page.dart'; 
+import '../providers/auth_model.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_state.dart';
 
@@ -22,8 +24,7 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
@@ -57,32 +58,28 @@ class MyHomePage extends StatelessWidget {
                 ],
               ),
             ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Item 1'),
-              onTap: () {
-                Navigator.pop(context);
-              },
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  ListTile(
+                    leading: Icon(Icons.arrow_back),
+                    title: Text('Voltar'),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
             ),
             ListTile(
-              leading: Icon(Icons.search),
-              title: Text('Item 2'),
+              leading: Icon(Icons.logout),
+              title: Text('Sair'),
               onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Configurações'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.help),
-              title: Text('Ajuda'),
-              onTap: () {
-                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => AuthPage()),
+                );
               },
             ),
           ],
@@ -91,7 +88,7 @@ class MyHomePage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            appState.updateHeaderText('Cabeçalho do Drawer');
+            appState.updateHeaderText('Estoque    Bright Bee');
           },
           child: Text('Atualizar Cabeçalho'),
         ),
@@ -99,4 +96,3 @@ class MyHomePage extends StatelessWidget {
     );
   }
 }
-
