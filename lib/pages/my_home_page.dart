@@ -5,6 +5,8 @@ import '../pages/auth_page.dart';
 import '../providers/app_state.dart';
 
 class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
@@ -12,11 +14,11 @@ class MyHomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Texto'),
+        title: const Text('Texto'),
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -28,7 +30,7 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             DrawerHeader(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.brown,
               ),
               child: Row(
@@ -37,7 +39,7 @@ class MyHomePage extends StatelessWidget {
                   Container(
                     width: 80, 
                     height: 80, 
-                    child: AspectRatio(
+                    child: const AspectRatio(
                       aspectRatio: 1.0, 
                       child: Icon(
                         Icons.account_circle,
@@ -46,11 +48,11 @@ class MyHomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 16), 
+                  const SizedBox(width: 16), 
                   Expanded( 
                     child: Text(
                       appState.headerText,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.yellow,
                         fontSize: 24,
                       ),
@@ -64,8 +66,8 @@ class MyHomePage extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 children: <Widget>[
                   ListTile(
-                    leading: Icon(Icons.arrow_back),
-                    title: Text('Voltar'),
+                    leading: const Icon(Icons.arrow_back),
+                    title: const Text('Voltar'),
                     onTap: () {
                       Navigator.pop(context);
                     },
@@ -74,8 +76,8 @@ class MyHomePage extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Sair'),
+              leading: const Icon(Icons.logout),
+              title: const Text('Sair'),
               onTap: () {
                 authModel.logout();
                 Navigator.pushAndRemoveUntil(
@@ -93,7 +95,7 @@ class MyHomePage extends StatelessWidget {
           onPressed: () {
             appState.updateHeaderText('Estoque Bright Bee');
           },
-          child: Text('Atualizar Cabeçalho'),
+          child: const Text('Atualizar Cabeçalho'),
         ),
       ),
     );

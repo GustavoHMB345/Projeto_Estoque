@@ -30,13 +30,13 @@ class MyApp extends StatelessWidget {
         '/': (context) => Consumer<AuthModel>(
           builder: (context, authModel, child) {
             if (authModel.isAuthenticated) {
-              return MyHomePage();
+              return const MyHomePage();
             } else {
               return AuthPage();
             }
           },
         ),
-        '/home': (context) => MyHomePage(),
+        '/home': (context) => const MyHomePage(),
         '/login': (context) => AuthPage(),
       },
     );
