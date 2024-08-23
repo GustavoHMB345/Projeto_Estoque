@@ -7,7 +7,8 @@ class AuthPage extends StatelessWidget {
   final TextEditingController usernameController;
   final TextEditingController passwordController;
 
-  const AuthPage({super.key, 
+  const AuthPage({
+    super.key,
     required this.onLogin,
     required this.usernameController,
     required this.passwordController,
@@ -82,30 +83,31 @@ class AuthPage extends StatelessWidget {
     );
   }
 
- Widget _buildLoginButton({
-  required BuildContext context,
-  required AuthModel authModel,
-}) {
-  return ElevatedButton(
-    onPressed: () {
-      final username = usernameController.text;
-      final password = passwordController.text;
+  Widget _buildLoginButton({
+    required BuildContext context,
+    required AuthModel authModel,
+  }) {
+    return ElevatedButton(
+      onPressed: () {
+        final username = usernameController.text;
+        final password = passwordController.text;
 
-      authModel.login(username, password); 
+        onLogin(context, authModel); 
 
-      if (authModel.isAuthenticated) {
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Usuário ou senha inválidos')),
-        );
-      }
-    },
-    style: ElevatedButton.styleFrom(
-      backgroundColor: const Color.fromARGB(255, 218, 206, 96),
-      foregroundColor: Colors.brown,
-      minimumSize: const Size(double.infinity, 50),
-    ),
-    child: const Text('Login'),
-  );
-} 
+        if (authModel.isAuthenticated) {
+          
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Usuário ou senha inválidos')),
+          );
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color.fromARGB(255, 218, 206, 96),
+        foregroundColor: Colors.brown,
+        minimumSize: const Size(double.infinity, 50),
+      ),
+      child: const Text('Login'),
+    );
+  }
 }
