@@ -3,49 +3,63 @@ import 'package:provider/provider.dart';
 import '../providers/auth_model.dart';
 
 class AuthPage extends StatelessWidget {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final Function(BuildContext, AuthModel) onLogin;
+  final TextEditingController usernameController;
+  final TextEditingController passwordController;
 
-  AuthPage({super.key});
+  const AuthPage({super.key, 
+    required this.onLogin,
+    required this.usernameController,
+    required this.passwordController,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.yellow,
+      backgroundColor: Colors.brown,
       appBar: AppBar(
         title: const Text(''),
-        backgroundColor: Colors.yellow,
+        backgroundColor: Colors.brown,
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Consumer<AuthModel>(
-          builder: (context, authModel, child) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _buildTextInput(
-                  _usernameController, 
-                  'Username',
-                  false
-                ),
-                const SizedBox(height: 16.0),
-                _buildTextInput(
-                  _passwordController, 
-                  'Password',
-                  true
-                ),
-                const SizedBox(height: 20),
-                _buildLoginButton(context, authModel),
-              ],
-            );
-          },
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Consumer<AuthModel>(
+            builder: (context, authModel, child) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _buildTextInput(
+                    controller: usernameController,
+                    label: 'Username',
+                    obscureText: false,
+                  ),
+                  const SizedBox(height: 16.0),
+                  _buildTextInput(
+                    controller: passwordController,
+                    label: 'Password',
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 20),
+                  _buildLoginButton(
+                    context: context,
+                    authModel: authModel,
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildTextInput(TextEditingController controller, String label, bool obscureText) {
+  Widget _buildTextInput({
+    required TextEditingController controller,
+    required String label,
+    required bool obscureText,
+  }) {
     return Container(
       height: 60.0,
       width: double.infinity,
@@ -68,27 +82,30 @@ class AuthPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoginButton(BuildContext context, AuthModel authModel) {
-    return ElevatedButton(
-      onPressed: () {
-        String username = _usernameController.text;
-        String password = _passwordController.text;
-        authModel.login(username, password);
+ Widget _buildLoginButton({
+  required BuildContext context,
+  required AuthModel authModel,
+}) {
+  return ElevatedButton(
+    onPressed: () {
+      final username = usernameController.text;
+      final password = passwordController.text;
 
-        if (authModel.isAuthenticated) {
-          Navigator.pushReplacementNamed(context, '/home');
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Login failed')),
-          );
-        }
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.brown,
-        foregroundColor: Colors.white,
-        minimumSize: const Size(double.infinity, 50),
-      ),
-      child: const Text('Login'),
-    );
-  }
+      authModel.login(username, password); 
+
+      if (authModel.isAuthenticated) {
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Usuário ou senha inválidos')),
+        );
+      }
+    },
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color.fromARGB(255, 218, 206, 96),
+      foregroundColor: Colors.brown,
+      minimumSize: const Size(double.infinity, 50),
+    ),
+    child: const Text('Login'),
+  );
+} 
 }

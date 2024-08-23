@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_model.dart'; 
+import '../providers/auth_model.dart';
 import '../pages/auth_page.dart';
 import '../providers/app_state.dart';
 
@@ -36,20 +36,20 @@ class MyHomePage extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 80, 
-                    height: 80, 
-                    child: const AspectRatio(
-                      aspectRatio: 1.0, 
+                  const SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: AspectRatio(
+                      aspectRatio: 1.0,
                       child: Icon(
                         Icons.account_circle,
-                        size: 80, 
+                        size: 80,
                         color: Colors.yellow,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16), 
-                  Expanded( 
+                  const SizedBox(width: 16),
+                  Expanded(
                     child: Text(
                       appState.headerText,
                       style: const TextStyle(
@@ -82,7 +82,14 @@ class MyHomePage extends StatelessWidget {
                 authModel.logout();
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => AuthPage()),
+                  MaterialPageRoute(
+                    builder: (context) => AuthPage(
+                      onLogin: (context, authModel) {
+                      },
+                      usernameController: TextEditingController(),
+                      passwordController: TextEditingController(),
+                    ),
+                  ),
                   (route) => false,
                 );
               },
@@ -101,3 +108,4 @@ class MyHomePage extends StatelessWidget {
     );
   }
 }
+
