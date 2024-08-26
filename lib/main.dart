@@ -4,10 +4,13 @@ import 'providers/auth_model.dart' as auth_model;
 import 'pages/auth_page.dart';
 import 'pages/my_home_page.dart';
 import 'providers/app_state.dart';
+import 'database.dart'; 
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
+ mysqlDb();
+
   runApp(
     MultiProvider(
       providers: [
@@ -74,4 +77,11 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+}
+
+final mysqlDatabase = Database(mysqlHost: '172.16.100.2');
+
+Future<void> mysqlDb() async {
+  final results = await mysqlDatabase.buscarItens('Query');
+  print(results);
 }

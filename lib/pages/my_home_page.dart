@@ -5,6 +5,7 @@ import '../pages/auth_page.dart';
 import '../providers/app_state.dart';
 import '../database.dart';
 
+
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
 
@@ -107,11 +108,6 @@ class MyHomePage extends StatelessWidget {
                 labelText: 'Buscar',
                 border: OutlineInputBorder(),
               ),
-              onChanged: (query) async {
-                final database = Database();
-                final results = await database.searchItems(query);
-                print(results);
-              },
             ),
             ElevatedButton(
               onPressed: () {
