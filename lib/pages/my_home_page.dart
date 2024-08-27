@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../providers/auth_model.dart';
 import '../pages/auth_page.dart';
 import '../providers/app_state.dart';
-import '../database.dart';
 
 
 class MyHomePage extends StatelessWidget {
@@ -103,8 +102,8 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              decoration: const InputDecoration(
+            const TextField(
+              decoration: InputDecoration(
                 labelText: 'Buscar',
                 border: OutlineInputBorder(),
               ),

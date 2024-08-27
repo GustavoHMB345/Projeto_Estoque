@@ -1,70 +1,39 @@
-import 'package:mysql1/mysql1.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'dart:convert';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'web_entrypoint.dart';
 
-class Database {
-  static Database? _instance;
+void main() {
+  runApp(MyApp());
+}
 
-  factory Database({required String mysqlHost}) {
-    _instance ??= Database._(mysqlHost);
-    return _instance!;
-  }
-
-  Database._(this._mysqlHost) : _conn = null;
-  MySqlConnection? _conn;
-  final String _mysqlHost;
-
-  Future<void> _initConnection() async {
-    final config = await rootBundle.loadString('assets/config.json');
-    final jsonConfig = jsonDecode(config);
-
-    _conn = await MySqlConnection.connect(
-      ConnectionSettings(
-        host: _mysqlHost,
-        user: jsonConfig['user'],
-        password: jsonConfig['password'],
-        db: jsonConfig['db'],
-        port: jsonConfig['port'],
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: FutureBuilder(
+            future: MyDatabase.initDB(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text('Connected to database');
+              } else {
+                return Text('Failed to connect to database');
+              }
+            },
+          ),
+        ),
       ),
     );
   }
-
-  Future<List<Map<String, dynamic>>> buscarItens(String query) async {
-    if (_conn == null) {
-      await _initConnection();
-    }
-    final queryParam = '%$query%';
-    final results = await _conn!.query('SELECT * FROM sua_tabela WHERE nome LIKE ?', [queryParam]);
-    return results.map((row) {
-      return row.assoc();
-    }).toList();
-  }
 }
 
-extension on ResultRow {
-  Map<String, dynamic> assoc() {
-    final map = <String, dynamic>{};
-    for (var i = 0; i < fields.length; i++) {
-      map[fields[i].name] = this[i];
-    }
-    return map;
-  }
-}
 
 class MySQLDB {
-  final Database _database;
+  final MyDatabase _database;
 
-  MySQLDB({required String mysqlHost}) : _database = Database(mysqlHost: mysqlHost);
+  MySQLDB({required MyDatabase database}) : _database = database;
 
   Future<List<Map<String, dynamic>>> buscarItens(String query) async {
     return await _database.buscarItens(query);
   }
-}
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); 
-  final mysqlDB = MySQLDB(mysqlHost: '172.16.100.2');
-  final results = await mysqlDB.buscarItens('query');
-  print(results);
 }
