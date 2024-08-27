@@ -1,39 +1,27 @@
-import 'package:flutter/material.dart';
-import 'web_entrypoint.dart';
+import 'package:mysql1/mysql1.dart';
 
-void main() {
-  runApp(MyApp());
-}
+class Database {
+  static const _host = '172.16.100.2';
+  static const _database = 'dbbrightinventorydesenvolvedor';
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: FutureBuilder(
-            future: MyDatabase.initDB(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text('Connected to database');
-              } else {
-                return Text('Failed to connect to database');
-              }
-            },
-          ),
-        ),
-      ),
+  static Future<MySqlConnection> _getConnection() async {
+    return await MySqlConnection.connect(
+      host: _host,
+      db: _database,
     );
   }
-}
 
+  static Future<List<Map<String, dynamic>>> buscarItens() async {
+    final conn = await _getConnection();
+    final results = await conn.query('SELECT * FROM categoriaEquipamento');
+    await conn.close();
+    return results.map((row) => row.fields).toList();
+  }
 
-class MySQLDB {
-  final MyDatabase _database;
-
-  MySQLDB({required MyDatabase database}) : _database = database;
-
-  Future<List<Map<String, dynamic>>> buscarItens(String query) async {
-    return await _database.buscarItens(query);
+  static Future<List<Map<String, dynamic>>> fetchData() async {
+    final conn = await _getConnection();
+    final results = await conn.query('SELECT * FROM categoriaEquipamento');
+    await conn.close();
+    return results.map((row) => row.fields).toList();
   }
 }

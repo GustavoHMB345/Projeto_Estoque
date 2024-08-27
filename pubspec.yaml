@@ -31,8 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   provider: 6.1.2
-  sqflite: ^2.0.0+3
   path_provider: ^2.0.2
+  mysql1: 0.20.0
 
 
  

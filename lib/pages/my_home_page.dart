@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/auth_model.dart';
 import '../pages/auth_page.dart';
 import '../providers/app_state.dart';
-
+import 'package:projeto_estoque/database.dart';
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
@@ -85,8 +85,7 @@ class MyHomePage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => AuthPage(
-                      onLogin: (context, authModel) {
-                      },
+                      onLogin: (context, authModel) {},
                       usernameController: TextEditingController(),
                       passwordController: TextEditingController(),
                     ),
@@ -109,10 +108,33 @@ class MyHomePage extends StatelessWidget {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                await authModel.fetchData();
                 appState.updateHeaderText('Estoque Bright Bee');
               },
               child: const Text('Atualizar Cabeçalho'),
+            ),
+            Expanded(
+              child: FutureBuilder(
+                future: authModel.fetchData(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<Map<String, dynamic>> dataList = snapshot.data as List<Map<String, dynamic>>;
+                    return ListView.builder(
+                      itemCount: dataList.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(dataList[index]['nome']),
+                        );
+                      },
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
+              ),
             ),
           ],
         ),
