@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_estoque/consumer_api.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_model.dart';
 import '../pages/auth_page.dart';
 import '../providers/app_state.dart';
-import 'package:projeto_estoque/database.dart';
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
   @override
+  MyHomePageState createState() => MyHomePageState();
+}
+
+class MyHomePageState extends State<MyHomePage> {
+  @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<AppState>(context);
-    final authModel = Provider.of<AuthModel>(context);
+    final appStateManager = Provider.of<AppState>(context);
+    final authenticator = Provider.of<AuthModel>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -29,7 +34,7 @@ class MyHomePage extends StatelessWidget {
       ),
       drawer: Drawer(
         child: Column(
-          children: <Widget>[
+          children: [
             DrawerHeader(
               decoration: const BoxDecoration(
                 color: Colors.brown,
@@ -52,7 +57,7 @@ class MyHomePage extends StatelessWidget {
                   const SizedBox(width: 16),
                   Expanded(
                     child: Text(
-                      appState.headerText,
+                      appStateManager.headerText,
                       style: const TextStyle(
                         color: Colors.yellow,
                         fontSize: 24,
@@ -65,7 +70,7 @@ class MyHomePage extends StatelessWidget {
             Expanded(
               child: ListView(
                 padding: EdgeInsets.zero,
-                children: <Widget>[
+                children: [
                   ListTile(
                     leading: const Icon(Icons.arrow_back),
                     title: const Text('Voltar'),
@@ -80,7 +85,7 @@ class MyHomePage extends StatelessWidget {
               leading: const Icon(Icons.logout),
               title: const Text('Sair'),
               onTap: () {
-                authModel.logout();
+                authenticator.logout();
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
@@ -103,38 +108,15 @@ class MyHomePage extends StatelessWidget {
           children: [
             const TextField(
               decoration: InputDecoration(
-                labelText: 'Buscar',
+                labelText: 'Pesquisar aparato',
                 border: OutlineInputBorder(),
               ),
             ),
             ElevatedButton(
               onPressed: () async {
-                await authModel.fetchData();
-                appState.updateHeaderText('Estoque Bright Bee');
+              await fetchDados();
               },
-              child: const Text('Atualizar Cabeçalho'),
-            ),
-            Expanded(
-              child: FutureBuilder(
-                future: authModel.fetchData(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List<Map<String, dynamic>> dataList = snapshot.data as List<Map<String, dynamic>>;
-                    return ListView.builder(
-                      itemCount: dataList.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(dataList[index]['nome']),
-                        );
-                      },
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text('${snapshot.error}');
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                },
-              ),
+              child: const Text('Buscar'),
             ),
           ],
         ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_estoque/database.dart';
+
 
 class AuthModel with ChangeNotifier {
   final GlobalKey<NavigatorState> _navigatorKey;
@@ -30,7 +30,3 @@ class AuthModel with ChangeNotifier {
     _navigatorKey.currentState?.pushReplacementNamed('/login');
   }
 }
-  Future<List<Map<String, dynamic>>> fetchData() async {
-    final data = await Database.buscarItens();
-    return data;
-  }

@@ -5,6 +5,7 @@ import 'pages/auth_page.dart';
 import 'pages/my_home_page.dart';
 import 'providers/app_state.dart';
 
+
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
@@ -14,12 +15,14 @@ void main() {
         ChangeNotifierProvider(create: (context) => auth_model.AuthModel(navigatorKey)),
         ChangeNotifierProvider(create: (context) => AppState()),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
