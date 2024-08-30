@@ -5,6 +5,7 @@ import '../providers/auth_model.dart';
 import '../pages/auth_page.dart';
 import '../providers/app_state.dart';
 
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -13,6 +14,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
+  List<dynamic> _itens = [];
+
   @override
   Widget build(BuildContext context) {
     final appStateManager = Provider.of<AppState>(context);
@@ -114,9 +117,23 @@ class MyHomePageState extends State<MyHomePage> {
             ),
             ElevatedButton(
               onPressed: () async {
-              await fetchDados();
+                final item = await fetchDados();
+                setState(() {
+                  _itens = item;
+                });
               },
               child: const Text('Buscar'),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _itens.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(_itens[index]['nome']),
+                    subtitle: Text(_itens[index]['descricao']),
+                  );
+                },
+              ),
             ),
           ],
         ),
