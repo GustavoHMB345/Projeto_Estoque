@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 Future<List<dynamic>> fetchDados() async {
-  const url = 'http://192.168.2.63';
+  const url = 'http:192.168.2.63';
   final client = http.Client();
 
   final response = await client.get(Uri.parse(url), 
@@ -24,3 +24,4 @@ Future<List<dynamic>> fetchDados() async {
     throw Exception('Erro ao buscar dados');
   }
 }
+

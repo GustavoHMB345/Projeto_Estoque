@@ -17,41 +17,44 @@ class AuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.brown,
-      appBar: AppBar(
-        title: const Text(''),
-        backgroundColor: Colors.brown,
-        elevation: 0,
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Consumer<AuthModel>(
-            builder: (context, authModel, child) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  _buildTextInput(
-                    controller: usernameController,
-                    label: 'Username',
-                    obscureText: false,
-                  ),
-                  const SizedBox(height: 16.0),
-                  _buildTextInput(
-                    controller: passwordController,
-                    label: 'Password',
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 20),
-                  _buildLoginButton(
-                    context: context,
-                    authModel: authModel,
-                  ),
-                ],
-              );
-            },
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Image.network(
+            'https://www.designi.com.br/images/preview/10532917.jpg',
+            fit: BoxFit.cover,
           ),
-        ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Consumer<AuthModel>(
+                builder: (context, authModel, child) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      _buildTextInput(
+                        controller: usernameController,
+                        label: 'Username',
+                        obscureText: false,
+                      ),
+                      const SizedBox(height: 16.0),
+                      _buildTextInput(
+                        controller: passwordController,
+                        label: 'Password',
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 20),
+                      _buildLoginButton(
+                        context: context,
+                        authModel: authModel,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -89,13 +92,9 @@ class AuthPage extends StatelessWidget {
   }) {
     return ElevatedButton(
       onPressed: () {
-        final username = usernameController.text;
-        final password = passwordController.text;
-
-        onLogin(context, authModel); 
+        onLogin(context, authModel);
 
         if (authModel.isAuthenticated) {
-          
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Usuário ou senha inválidos')),
