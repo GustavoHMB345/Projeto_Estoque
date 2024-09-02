@@ -9,6 +9,7 @@ import 'providers/app_state.dart';
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
+  Provider.debugCheckInvalidValueType = null;
   runApp(
     MultiProvider(
       providers: [

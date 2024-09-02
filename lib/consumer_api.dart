@@ -15,7 +15,7 @@ class AuthManager {
 }
 
 Future<List<dynamic>> fetchDados() async {
-  const url = 'http://127.0.0.1:3000';
+  const url = 'http://192.168.2.55:80';
   final client = http.Client();
 
   try {
@@ -47,6 +47,6 @@ Future<List<dynamic>> fetchDados() async {
       print('Status Code: ${e.statusCode}');
       print('Reason Phrase: ${e.reasonPhrase}');
     }
-    throw Exception('Erro ao buscar dados');
+      throw Exception('Erro ao buscar dados');
   }
 }
