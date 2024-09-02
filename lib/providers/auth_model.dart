@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 
-
 class AuthModel with ChangeNotifier {
   final GlobalKey<NavigatorState> _navigatorKey;
   bool _isAuthenticated = false;
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  static AuthModel? _instance;
+
+  static AuthModel get instance {
+    _instance ??= AuthModel(GlobalKey<NavigatorState>());
+    return _instance!;
+  }
 
   AuthModel(this._navigatorKey);
 

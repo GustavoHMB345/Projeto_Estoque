@@ -24,6 +24,16 @@ class AuthPage extends StatelessWidget {
             'https://www.designi.com.br/images/preview/10532917.jpg',
             fit: BoxFit.cover,
           ),
+          Positioned(
+            top: 100,
+            left: 100,
+            right: 100,
+            child: Center(
+              child: Image.network(
+                'https://brightbee.com.br/wp-content/uploads/2022/10/logo-bright-bee.png',
+              ),
+            ),
+          ),
           Center(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -37,13 +47,13 @@ class AuthPage extends StatelessWidget {
                         label: 'Username',
                         obscureText: false,
                       ),
-                      const SizedBox(height: 16.0),
+                      const SizedBox(height: 10.0),
                       _buildTextInput(
                         controller: passwordController,
                         label: 'Password',
                         obscureText: true,
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       _buildLoginButton(
                         context: context,
                         authModel: authModel,
@@ -66,7 +76,7 @@ class AuthPage extends StatelessWidget {
   }) {
     return Container(
       height: 60.0,
-      width: double.infinity,
+      width: 500.0,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8.0),
@@ -104,7 +114,6 @@ class AuthPage extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromARGB(255, 218, 206, 96),
         foregroundColor: Colors.brown,
-        minimumSize: const Size(double.infinity, 50),
       ),
       child: const Text('Login'),
     );

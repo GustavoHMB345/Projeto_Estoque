@@ -89,7 +89,7 @@ class MyHomePageState extends State<MyHomePage> {
               title: const Text('Sair'),
               onTap: () {
                 authenticator.logout();
-                Navigator.pushAndRemoveUntil(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => AuthPage(
@@ -98,7 +98,6 @@ class MyHomePageState extends State<MyHomePage> {
                       passwordController: TextEditingController(),
                     ),
                   ),
-                  (route) => false,
                 );
               },
             ),
