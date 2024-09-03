@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
-
 class AuthManager {
   static final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   static final FocusManager _focusManager = FocusManager.instance;
@@ -15,7 +14,7 @@ class AuthManager {
 }
 
 Future<List<dynamic>> fetchDados() async {
-  const url = 'http://192.168.2.55:80';
+  const url = 'http://192.168.2.55:3000/estoque/categorias/:nomeCategoria';
   final client = http.Client();
 
   try {
@@ -28,16 +27,23 @@ Future<List<dynamic>> fetchDados() async {
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
-      final listaItens = jsonData['itens'];
+
+      List<dynamic> itemList = [];
+      if (jsonData['itens'] is List) {
+        itemList = jsonData['itens'].map((value) => value).toList();
+      } else if (jsonData['itens'] is Map) {
+        itemList = jsonData['itens'].values.toList();
+      }
+
       if (AuthManager.isLoggedIn) {
-        for (var item in listaItens) {
+        for (var item in itemList) {
           print(item['id']);
           print(item['nome']);
         }
       } else {
         print('Você precisa estar logado para visualizar esses dados');
       }
-      return listaItens;
+      return itemList;
     } else {
       throw Exception('Erro ao buscar dados');
     }
@@ -47,6 +53,6 @@ Future<List<dynamic>> fetchDados() async {
       print('Status Code: ${e.statusCode}');
       print('Reason Phrase: ${e.reasonPhrase}');
     }
-      throw Exception('Erro ao buscar dados');
+    throw Exception('Erro ao buscar dados');
   }
 }

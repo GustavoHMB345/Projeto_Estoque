@@ -31,6 +31,7 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  
   AppBar _buildAppBar() {
     return AppBar(
       title: const Text('Texto'),
@@ -43,6 +44,7 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  
   Drawer _buildDrawer(AppState appStateManager) {
     return Drawer(
       child: Column(
@@ -89,73 +91,85 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Column _buildDrawerList() {
-    return Column(
-      children: <Widget>[
-        ListTile(
-          leading: const Icon(Icons.arrow_back),
-          title: const Text('Voltar'),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.logout),
-          title: const Text('Sair'),
-          onTap: () {
-            Provider.of<AuthModel>(context, listen: false).logout();
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LoginPage(
-                  onLogin: onLogin,
-                  usernameController: _usernameController,
-                  passwordController: _passwordController,
-                ),
-              ),
-            );
-          },
-        ),
-      ],
+  Widget _buildDrawerList() {
+    return Consumer<AppState>(
+      builder: (context, appStateManager, child) {
+        return Column(
+          mainAxisAlignment: appStateManager.mainAxisAlignment,
+          children: <Widget>[
+            ListTile(
+              leading: const Icon(Icons.arrow_back),
+              title: const Text('Voltar'),
+              onTap: () {
+                Navigator.pop(context);
+                appStateManager.updateHeaderText('Voltou para a tela anterior');
+                appStateManager.updateMainAxisAlignment(MainAxisAlignment.spaceAround);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Sair'),
+              onTap: () {
+                Provider.of<AuthModel>(context, listen: false).logout();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginPage(
+                      onLogin: onLogin,
+                      usernameController: _usernameController,
+                      passwordController: _passwordController,
+                    ),
+                  ),
+                );
+                appStateManager.updateHeaderText('Você saiu');
+                appStateManager.updateMainAxisAlignment(MainAxisAlignment.spaceEvenly);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Widget _buildBody() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextField(
-            controller: _textController,
-            decoration: const InputDecoration(
-              labelText: 'Pesquisar aparato',
-              border: OutlineInputBorder(),
-            ),
+  
+ Widget _buildBody() {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextField(
+          controller: _textController,
+          decoration: const InputDecoration(
+            labelText: 'Pesquisar aparato',
+            border: OutlineInputBorder(),
           ),
-          ElevatedButton(
-            onPressed: () async {
-              final item = await fetchDados();
-              setState(() {
-                _itens = item;
-              });
-            },
-            child: const Text('Buscar'),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _itens.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_itens[index]['nome']),
-                  subtitle: Text(_itens[index]['descricao']),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            final item = await fetchDados();
+            setState(() {
+              _itens = item;
+            });
+          },
+          child: const Text('Buscar'),
+        ),
+        Expanded(
+          child: _itens.isEmpty
+              ? const Center(child: Text('Nenhum item encontrado'))
+              : Column(
+                  children: _itens.map((item) {
+                    Map<String, dynamic> itemMap = item as Map<String, dynamic>;
+                    return ListTile(
+                      title: Text(itemMap['nome'].toString()),
+                      subtitle: Text(itemMap['descricao'].toString()),
+                    );
+                  }).toList(),
+                ),
+        ),
+      ],
+    ),
+  );
+}
 
   void onLogin(BuildContext context, AuthModel authModel) {
     final username = _usernameController.text;
