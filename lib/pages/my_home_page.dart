@@ -16,6 +16,8 @@ class MyHomePageState extends State<MyHomePage> {
   List<dynamic> _itens = [];
   final _textController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +91,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   Column _buildDrawerList() {
     return Column(
-      children: [
+      children: <Widget>[
         ListTile(
           leading: const Icon(Icons.arrow_back),
           title: const Text('Voltar'),
@@ -106,11 +108,9 @@ class MyHomePageState extends State<MyHomePage> {
               context,
               MaterialPageRoute(
                 builder: (context) => LoginPage(
-                  onLogin: (context, authModel) {
-                    _handleLogin(context, authModel, _textController);
-                  },
-                  usernameController: _textController, 
-                  passwordController: _textController,
+                  onLogin: onLogin,
+                  usernameController: _usernameController,
+                  passwordController: _passwordController,
                 ),
               ),
             );
@@ -157,16 +157,18 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _handleLogin(BuildContext context, AuthModel authModel, TextEditingController textController) {
-    String username = textController.text;
-    String password = textController.text;
+  void onLogin(BuildContext context, AuthModel authModel) {
+    final username = _usernameController.text;
+    final password = _passwordController.text;
     authModel.login(username, password);
 
     if (authModel.isAuthenticated) {
       Navigator.pushReplacementNamed(context, '/home');
     } else {
-      const SnackBar(
-        content: Text('Login failed'),
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Login failed'),
+        ),
       );
     }
   }
