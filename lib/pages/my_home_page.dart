@@ -1,9 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:projeto_estoque/consumer_api.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_model.dart';
 import '../providers/app_state.dart';
 import 'login_page.dart';
+import 'package:http/http.dart' as http;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -13,11 +14,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  List<dynamic> _itens = [];
   final _textController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  Future<List<Map<String, dynamic>>>? _futureItens;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,6 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  
   AppBar _buildAppBar() {
     return AppBar(
       title: const Text('Texto'),
@@ -44,7 +44,6 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  
   Drawer _buildDrawer(AppState appStateManager) {
     return Drawer(
       child: Column(
@@ -131,45 +130,67 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  
- Widget _buildBody() {
-  return Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        TextField(
-          controller: _textController,
-          decoration: const InputDecoration(
-            labelText: 'Pesquisar aparato',
-            border: OutlineInputBorder(),
+  Widget _buildBody() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextField(
+            controller: _textController,
+            decoration: const InputDecoration(
+              labelText: 'Pesquisar categoria',
+              border: OutlineInputBorder(),
+            ),
           ),
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            final item = await fetchDados();
-            setState(() {
-              _itens = item;
-            });
-          },
-          child: const Text('Buscar'),
-        ),
-        Expanded(
-          child: _itens.isEmpty
-              ? const Center(child: Text('Nenhum item encontrado'))
-              : Column(
-                  children: _itens.map((item) {
-                    Map<String, dynamic> itemMap = item as Map<String, dynamic>;
-                    return ListTile(
-                      title: Text(itemMap['nome'].toString()),
-                      subtitle: Text(itemMap['descricao'].toString()),
-                    );
-                  }).toList(),
-                ),
-        ),
-      ],
-    ),
-  );
-}
+          ElevatedButton(
+            onPressed: () async {
+              final categoriaEquipamento = _textController.text.trim();
+              if (categoriaEquipamento.isNotEmpty) {
+                setState(() {
+                  _futureItens = fetchDados(categoriaEquipamento);
+                });
+              }
+            },
+            child: const Text('Buscar'),
+          ),
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _futureItens,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('Erro'),
+                  );
+                } else if (snapshot.hasData) {
+                  final itens = snapshot.data ?? [];
+                  return itens.isEmpty
+                      ? const Center(child: Text('Nenhuma categoria encontrada'))
+                      : ListView.builder(
+                          itemCount: itens.length,
+                          itemBuilder: (context, index) {
+                            final item = itens[index];
+                            return ListTile(
+                              title: Text(item['nomeCategoria'] ?? 'Sem Nome'),
+                              subtitle: Text('Quantidade: ${item['quantidadeCategoria'] ?? 'N/A'}'),
+                            );
+                          },
+                        );
+                } else {
+                  return const Center(
+                    child: Text('Nenhum dado encontrado'),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   void onLogin(BuildContext context, AuthModel authModel) {
     final username = _usernameController.text;
@@ -181,9 +202,38 @@ class MyHomePageState extends State<MyHomePage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Login failed'),
+          content: Text('Login falhou'),
         ),
       );
     }
+  }
+}
+
+Future<List<Map<String, dynamic>>> fetchDados(String pesquisa) async {
+  final url = 'http://192.168.2.55:80/estoque/categorias';
+  final client = http.Client();
+
+  try {
+    final response = await client.get(Uri.parse(url), headers: {
+      'Connection': 'keep-alive',
+      'Keep-Alive': 'timeout=30'
+    }).timeout(const Duration(seconds: 30));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body) as List<dynamic>;
+
+      final categorias = jsonData.where((item) {
+        final nomeCategoria = item['nomeCategoria'] as String;
+        return nomeCategoria.toLowerCase().contains(pesquisa.toLowerCase());
+      }).toList().cast<Map<String, dynamic>>();
+
+      return categorias;
+    } else {
+      return [];
+    }
+  } catch (e) {
+    return [];
+  } finally {
+    client.close();
   }
 }

@@ -16,4 +16,4 @@ class AppState with ChangeNotifier {
     _mainAxisAlignment = newMainAxisAlignment;
     notifyListeners();
   }
-}
+} 
