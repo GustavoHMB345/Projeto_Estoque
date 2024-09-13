@@ -1,7 +1,7 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 final Logger _logger = Logger('AuthManager');
 
@@ -18,7 +18,7 @@ class AuthManager {
 }
 
 Future<List<Map<String, dynamic>>> fetchDados(String pesquisa) async {
-  final url = 'http://192.168.2.55:80/estoque/categorias';
+  final url = 'http://192.168.2.55:80/estoque';
   final client = http.Client();
 
   try {
@@ -29,7 +29,7 @@ Future<List<Map<String, dynamic>>> fetchDados(String pesquisa) async {
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body) as List<dynamic>;
-      
+
       final categorias = jsonData.where((item) {
         final nomeCategoria = item['nomeCategoria'] as String;
         return nomeCategoria.toLowerCase().contains(pesquisa.toLowerCase());

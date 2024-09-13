@@ -1,10 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_model.dart';
 import '../providers/app_state.dart';
 import 'login_page.dart';
-import 'package:http/http.dart' as http;
+import 'package:projeto_estoque/consumer_api.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -21,28 +20,23 @@ class MyHomePageState extends State<MyHomePage> {
   Future<List<Map<String, dynamic>>>? _futureItens;
 
   @override
+  void initState() {
+    super.initState();
+    _futureItens = fetchDados('');
+  }
+
+  @override
   Widget build(BuildContext context) {
     final appStateManager = Provider.of<AppState>(context);
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: _buildAppBar(),
       drawer: _buildDrawer(appStateManager),
       body: _buildBody(),
     );
   }
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: const Text('Texto'),
-      leading: IconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: () {
-          _scaffoldKey.currentState?.openDrawer();
-        },
-      ),
-    );
-  }
+ 
 
   Drawer _buildDrawer(AppState appStateManager) {
     return Drawer(
@@ -58,7 +52,8 @@ class MyHomePageState extends State<MyHomePage> {
   DrawerHeader _buildDrawerHeader(AppState appStateManager) {
     return DrawerHeader(
       decoration: const BoxDecoration(
-        color: Colors.brown,
+        // Modifique a cor de fundo do DrawerHeader aqui
+        color: Colors.brown, // Exemplo de cor
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -71,7 +66,8 @@ class MyHomePageState extends State<MyHomePage> {
               child: Icon(
                 Icons.account_circle,
                 size: 80,
-                color: Colors.yellow,
+                // Modifique a cor do ícone aqui
+                color: Colors.yellow, // Exemplo de cor
               ),
             ),
           ),
@@ -80,8 +76,9 @@ class MyHomePageState extends State<MyHomePage> {
             child: Text(
               appStateManager.headerText,
               style: const TextStyle(
-                color: Colors.yellow,
-                fontSize: 24,
+                // Modifique a cor e o tamanho do texto aqui
+                color: Colors.yellow, // Exemplo de cor
+                fontSize: 24, // Exemplo de tamanho
               ),
             ),
           ),
@@ -135,13 +132,17 @@ class MyHomePageState extends State<MyHomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TextField(
-            controller: _textController,
-            decoration: const InputDecoration(
-              labelText: 'Pesquisar categoria',
-              border: OutlineInputBorder(),
+          SizedBox(
+            width: 400, 
+            child: TextField(
+              controller: _textController,
+              decoration: const InputDecoration(
+                labelText: 'Pesquisar categoria',
+                border: OutlineInputBorder(),
+              ),
             ),
           ),
+          const SizedBox(height: 19), 
           ElevatedButton(
             onPressed: () async {
               final categoriaEquipamento = _textController.text.trim();
@@ -151,6 +152,11 @@ class MyHomePageState extends State<MyHomePage> {
                 });
               }
             },
+            // Modifique o estilo do botão aqui
+            style: ButtonStyle(
+             backgroundColor: WidgetStateProperty.all<Color>(Color.fromARGB(200, 10, 5, 6)),
+            foregroundColor: WidgetStateProperty.all<Color>(Colors.yellow), 
+            ),
             child: const Text('Buscar'),
           ),
           Expanded(
@@ -163,7 +169,7 @@ class MyHomePageState extends State<MyHomePage> {
                   );
                 } else if (snapshot.hasError) {
                   return const Center(
-                    child: Text('Erro'),
+                    child: Text('Erro ao carregar dados'),
                   );
                 } else if (snapshot.hasData) {
                   final itens = snapshot.data ?? [];
@@ -173,9 +179,28 @@ class MyHomePageState extends State<MyHomePage> {
                           itemCount: itens.length,
                           itemBuilder: (context, index) {
                             final item = itens[index];
-                            return ListTile(
-                              title: Text(item['nomeCategoria'] ?? 'Sem Nome'),
-                              subtitle: Text('Quantidade: ${item['quantidadeCategoria'] ?? 'N/A'}'),
+                            return Card(
+                              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.all(16.0),
+                                title: Text(
+                                  item['nomeCategoria'] ?? 'Sem Nome',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0,
+                                    // Modifique a cor do texto aqui
+                                    color: Colors.black, // Exemplo de cor
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  'Quantidade: ${item['quantidadeCategoria'] ?? 'N/A'}',
+                                  style: const TextStyle(
+                                    fontSize: 16.0,
+                                    // Modifique a cor do texto aqui
+                                    color: Colors.grey, // Exemplo de cor
+                                  ),
+                                ),
+                              ),
                             );
                           },
                         );
@@ -206,34 +231,5 @@ class MyHomePageState extends State<MyHomePage> {
         ),
       );
     }
-  }
-}
-
-Future<List<Map<String, dynamic>>> fetchDados(String pesquisa) async {
-  final url = 'http://192.168.2.55:80/estoque/categorias';
-  final client = http.Client();
-
-  try {
-    final response = await client.get(Uri.parse(url), headers: {
-      'Connection': 'keep-alive',
-      'Keep-Alive': 'timeout=30'
-    }).timeout(const Duration(seconds: 30));
-
-    if (response.statusCode == 200) {
-      final jsonData = jsonDecode(response.body) as List<dynamic>;
-
-      final categorias = jsonData.where((item) {
-        final nomeCategoria = item['nomeCategoria'] as String;
-        return nomeCategoria.toLowerCase().contains(pesquisa.toLowerCase());
-      }).toList().cast<Map<String, dynamic>>();
-
-      return categorias;
-    } else {
-      return [];
-    }
-  } catch (e) {
-    return [];
-  } finally {
-    client.close();
   }
 }
