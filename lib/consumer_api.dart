@@ -18,7 +18,7 @@ class AuthManager {
 }
 
 Future<List<Map<String, dynamic>>> fetchDados(String pesquisa) async {
-  final url = 'http://192.168.2.55:80/estoque';
+  const url = 'http://192.168.2.55:80/estoque';
   final client = http.Client();
 
   try {

@@ -52,8 +52,7 @@ class MyHomePageState extends State<MyHomePage> {
   DrawerHeader _buildDrawerHeader(AppState appStateManager) {
     return DrawerHeader(
       decoration: const BoxDecoration(
-        // Modifique a cor de fundo do DrawerHeader aqui
-        color: Colors.brown, // Exemplo de cor
+        color: Colors.brown, 
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,8 +65,7 @@ class MyHomePageState extends State<MyHomePage> {
               child: Icon(
                 Icons.account_circle,
                 size: 80,
-                // Modifique a cor do ícone aqui
-                color: Colors.yellow, // Exemplo de cor
+                color: Colors.yellow, 
               ),
             ),
           ),
@@ -76,9 +74,8 @@ class MyHomePageState extends State<MyHomePage> {
             child: Text(
               appStateManager.headerText,
               style: const TextStyle(
-                // Modifique a cor e o tamanho do texto aqui
-                color: Colors.yellow, // Exemplo de cor
-                fontSize: 24, // Exemplo de tamanho
+                color: Colors.yellow, 
+                fontSize: 24, 
               ),
             ),
           ),
@@ -152,9 +149,8 @@ class MyHomePageState extends State<MyHomePage> {
                 });
               }
             },
-            // Modifique o estilo do botão aqui
             style: ButtonStyle(
-             backgroundColor: WidgetStateProperty.all<Color>(Color.fromARGB(200, 10, 5, 6)),
+             backgroundColor: WidgetStateProperty.all<Color>(Color.fromARGB(170, 46, 35, 14)),
             foregroundColor: WidgetStateProperty.all<Color>(Colors.yellow), 
             ),
             child: const Text('Buscar'),
@@ -188,16 +184,14 @@ class MyHomePageState extends State<MyHomePage> {
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20.0,
-                                    // Modifique a cor do texto aqui
-                                    color: Colors.black, // Exemplo de cor
+                                    color: Colors.black,
                                   ),
                                 ),
                                 subtitle: Text(
                                   'Quantidade: ${item['quantidadeCategoria'] ?? 'N/A'}',
                                   style: const TextStyle(
                                     fontSize: 16.0,
-                                    // Modifique a cor do texto aqui
-                                    color: Colors.grey, // Exemplo de cor
+                                    color: Colors.grey, 
                                   ),
                                 ),
                               ),
